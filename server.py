@@ -1599,6 +1599,9 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 from http.server import SimpleHTTPRequestHandler
 
 class Handler(SimpleHTTPRequestHandler):
+    def log_message(self, format, *args):
+        log.info(format % args)
+
     def do_GET(self):
         path = self.path.split("?")[0]
 
@@ -1950,7 +1953,7 @@ class Handler(SimpleHTTPRequestHandler):
                 self.send_response(404); self.end_headers()
 
         except Exception as e:
-            log.error(f"POST error: {e}")
+            log.error(f"POST error: {e}", exc_info=True)
             try:
                 self._json(500, {"error": str(e)})
             except:
